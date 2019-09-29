@@ -6,6 +6,7 @@ count = 0
 votos_totales = {}
 votos_totales_revisados = {}
 porcentaje={}
+votos_entidad = {str(i):{} for i in range(1, 33)}
 for archivo in file_nombre_archivos:    #Abrir cada archivo
     archivo = archivo.rstrip()
     data = json.load(open(archivo))
@@ -14,6 +15,8 @@ for archivo in file_nombre_archivos:    #Abrir cada archivo
         if int(sabana['revision']) >= 2:
             for partido in sabana['resultados'].keys():
                 votos_totales_revisados[partido]=votos_totales_revisados.get(partido, 0)+int(sabana['resultados'][partido])
+        for partido in sabana['resultados'].keys():       #Contar los votos por Entidad
+            votos_entidad[sabana['entidad']][partido] = votos_entidad[sabana['entidad']].get(partido, 0) + int(sabana['resultados'][partido])
         for partido in sabana['resultados'].keys():       #Contar los votos por partido
             votos_totales[partido] = votos_totales.get(partido, 0) + int(sabana['resultados'][partido])
 
@@ -53,3 +56,9 @@ for k,v in porcentaje.items():
 print('Votos por partidos:\t', "{0:.2f}".format(100*sum(votos_partidos_revisados.values())/sum(votos_partidos.values())),"%")
 print('Votos por coalisión:\t', "{0:.2f}".format(100*sum(votos_coalision_revisados.values())/sum(votos_coalision.values())),"%")
 print('Total de votos:\t\t', "{0:.2f}".format(100*sum(votos_totales_revisados.values())/sum(votos_totales.values())),"%")
+print("-------------------------")
+for k, v in votos_entidad.items():
+    print(k)
+    for i, j in v.items():
+        print(i, j)
+    print('-'*10)
